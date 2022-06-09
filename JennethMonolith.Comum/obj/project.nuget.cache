@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Bn70BgeyXG117r6MyhkuZO95cKl3eXmrZGyDQaRFq3htZwAEg8N7X7H6Jid2PKJ9rc5LZaCQ7hy3Gp5exgQckw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Calleb Malinoski\\Source\\Repos\\Jenner.Monolith\\JennethMonolith.Comum\\JennethMonolith.Comum.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Calleb Malinoski\\.nuget\\packages\\mongodb.bson\\2.14.1\\mongodb.bson.2.14.1.nupkg.sha512",
+    "C:\\Users\\Calleb Malinoski\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\5.0.0\\system.runtime.compilerservices.unsafe.5.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}
