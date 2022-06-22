@@ -1,5 +1,0 @@
-C:\Users\Calleb Malinoski\source\repos\JennerMonolith\JennerMonolith\JennethMonolith.Comum\obj\Debug\net5.0\JennethMonolith.Comum.csproj.AssemblyReference.cache
-C:\Users\Calleb Malinoski\source\repos\JennerMonolith\JennerMonolith\JennethMonolith.Comum\obj\Debug\net5.0\JennethMonolith.Comum.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\Calleb Malinoski\source\repos\JennerMonolith\JennerMonolith\JennethMonolith.Comum\obj\Debug\net5.0\JennethMonolith.Comum.AssemblyInfoInputs.cache
-C:\Users\Calleb Malinoski\source\repos\JennerMonolith\JennerMonolith\JennethMonolith.Comum\obj\Debug\net5.0\JennethMonolith.Comum.AssemblyInfo.cs
-C:\Users\Calleb Malinoski\source\repos\JennerMonolith\JennerMonolith\JennethMonolith.Comum\obj\Debug\net5.0\JennethMonolith.Comum.csproj.CoreCompileInputs.cache

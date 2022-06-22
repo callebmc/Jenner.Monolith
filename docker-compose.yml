@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  Jenner.Monolith:
+    image: ${DOCKER_REGISTRY-}jennermonolith
+    build:
+      context: .
+      dockerfile: src/JennerMonolith/Dockerfile
