@@ -8,7 +8,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace JennerMonolith.Agendamento.API.Services
+namespace JennerMonolith.Services
 {
     public class AgendamentoCreate : IRequest<Aplicacao>
     {

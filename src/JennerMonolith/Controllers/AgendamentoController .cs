@@ -1,5 +1,5 @@
-﻿using JennerMonolith.Agendamento.API.Services;
-using JennerMonolith.Comum.Models;
+﻿using JennerMonolith.Comum.Models;
+using JennerMonolith.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;

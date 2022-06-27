@@ -1,6 +1,8 @@
-﻿namespace JennerMonolith.Comum.Models
+﻿using System;
+
+namespace JennerMonolith.Comum.Models
 {
-    public record Vacina(string NomeVacina, string Descricao, int Doses, int Intervalo) : IVacina
+    public record Vacina(Guid Id, string NomeVacina, string Descricao, int Doses, int Intervalo) : IVacina
     {
 
     }
