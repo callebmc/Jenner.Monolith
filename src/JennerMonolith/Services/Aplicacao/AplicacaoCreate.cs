@@ -1,7 +1,7 @@
 ﻿using JennerMonolith.Comum.Models;
 using JennerMonolith.Comum.Models.Validators;
 using JennerMonolith.Data;
-using JennerMonolith.Services.Agendador;
+using JennerMonolith.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using MongoDB.Driver;

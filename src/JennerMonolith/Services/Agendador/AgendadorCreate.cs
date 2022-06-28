@@ -3,13 +3,10 @@ using JennerMonolith.Data;
 using MediatR;
 using MongoDB.Driver;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using static JennerMonolith.Comum.Constants;
 
-namespace JennerMonolith.Services.Agendador
+namespace JennerMonolith.Services
 {
     public class AgendadorCreate : IRequest<Unit>
     {
@@ -54,7 +51,7 @@ namespace JennerMonolith.Services.Agendador
 
             Console.WriteLine("Adicionei agendamento....");
 
-            _ = Mediator.Send(new AgendamentoCreate()
+            AgendamentoCreate agendamentoCreate = new AgendamentoCreate()
             {
                 Cpf = novoAgendamento.Cpf,
                 DataAgendamento = novoAgendamento.DataAgendamento,
@@ -62,7 +59,17 @@ namespace JennerMonolith.Services.Agendador
                 Dose = novoAgendamento.Dose,
                 NomePessoa = carteira.NomePessoa,
                 NomeVacina = novoAgendamento.NomeVacina
-            });
+            };
+
+            try
+            {
+                _ = Mediator.Send(agendamentoCreate);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            
             
 
             return Unit.Value;
