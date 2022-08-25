@@ -9,7 +9,7 @@ WORKDIR /src
 COPY ["src/JennerMonolith/JennerMonolith.csproj", "src/JennerMonolith/"]
 RUN dotnet restore "src/JennerMonolith/JennerMonolith.csproj"
 COPY . .
-WORKDIR "src/src/JennerMonolith"
+WORKDIR "/src/src/JennerMonolith"
 RUN dotnet build "JennerMonolith.csproj" -c Release -o /app/build
 
 FROM build AS publish
