@@ -43,7 +43,7 @@ namespace JennerMonolith.Data
         {
             VacinaPersistence mongoResult = await collection
                 .Find(v => v.NomeVacina.Equals(nomeVacina))
-                .SingleOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken);
             return mongoResult?.ToVacina() ?? null;
         }
 
@@ -60,7 +60,7 @@ namespace JennerMonolith.Data
 
             mongoResult = await collection
                 .Find(c => c.NomeVacina == nomeVacina)
-                .SingleOrDefaultAsync(cancellationToken);
+                .FirstOrDefaultAsync(cancellationToken);
 
 
 
