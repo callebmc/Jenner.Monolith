@@ -55,9 +55,10 @@ namespace JennerMonolith
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "JennerMonolith.API v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "JennerMonolith.API v1"));
             //app.UseForwardedHeaders();
 
             //if (!Configuration.GetValue<bool>("DOTNET_RUNNING_IN_CONTAINER"))
