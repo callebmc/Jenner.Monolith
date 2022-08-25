@@ -6,10 +6,10 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["JennerMonolith/JennerMonolith.csproj", "JennerMonolith/"]
-RUN dotnet restore "JennerMonolith/JennerMonolith.csproj"
+COPY ["src/JennerMonolith/JennerMonolith.csproj", "src/JennerMonolith/"]
+RUN dotnet restore "src/JennerMonolith/JennerMonolith.csproj"
 COPY . .
-WORKDIR "/src/JennerMonolith"
+WORKDIR "src/src/JennerMonolith"
 RUN dotnet build "JennerMonolith.csproj" -c Release -o /app/build
 
 FROM build AS publish
