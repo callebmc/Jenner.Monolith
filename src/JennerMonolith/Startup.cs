@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
+using System;
 
 namespace JennerMonolith
 {
@@ -40,7 +41,14 @@ namespace JennerMonolith
         {
             services.AddSingleton(_ =>
             {
-                return new MongoClient(Configuration.GetConnectionString(Constants.MongoConnectionString));
+                MongoClientSettings settings = MongoClientSettings.FromConnectionString(Configuration.GetConnectionString(Constants.MongoConnectionString));
+                settings.WaitQueueSize = int.MaxValue;
+                settings.WaitQueueTimeout = new TimeSpan(0, 4, 0);
+                settings.MinConnectionPoolSize = 0;
+                settings.MaxConnectionPoolSize = 1000;
+
+                return new MongoClient(settings);
+                //return new MongoClient(Configuration.GetConnectionString(Constants.MongoConnectionString));
             });
             services.AddScoped(sp =>
             {
