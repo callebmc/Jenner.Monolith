@@ -50,7 +50,7 @@ namespace JennerMonolith
                 return new MongoClient(settings);
                 //return new MongoClient(Configuration.GetConnectionString(Constants.MongoConnectionString));
             });
-            services.AddScoped(sp =>
+            services.AddSingleton(sp =>
             {
                 MongoClient mongoClient = sp.GetRequiredService<MongoClient>();
                 return mongoClient.GetDatabase(Constants.MongoAgendamentoDatabase);
@@ -67,12 +67,6 @@ namespace JennerMonolith
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "JennerMonolith.API v1"));
-            //app.UseForwardedHeaders();
-
-            //if (!Configuration.GetValue<bool>("DOTNET_RUNNING_IN_CONTAINER"))
-            //{
-            //    app.UseHttpsRedirection();
-            //}
 
             app.UseRouting();
 
