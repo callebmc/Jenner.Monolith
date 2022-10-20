@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace JennerMonolith.Services
 {
-    public class AgendadorCreate : IRequest<Unit>
+    public class AgendadorCreate : IRequest<Aplicacao>
     {
         public Guid Id { get; set; }
         public string Cpf { get; set; }
@@ -17,7 +17,7 @@ namespace JennerMonolith.Services
         public Aplicacao UltimaAplicacao { get; set; }
     }
 
-    public class AgendadorCreateHandler : IRequestHandler<AgendadorCreate, Unit>
+    public class AgendadorCreateHandler : IRequestHandler<AgendadorCreate, Aplicacao>
     {
         private readonly IMongoDatabase MongoDatabase;
         private readonly IMediator Mediator;
@@ -27,31 +27,25 @@ namespace JennerMonolith.Services
             Mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
         }
 
-        public async Task<Unit> Handle(AgendadorCreate request, CancellationToken cancellationToken)
+        public async Task<Aplicacao> Handle(AgendadorCreate request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Buscando no banco...");
+
             Vacina vacinaResult = await MongoDatabase
                                         .GetVacinaCollection()
-                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, cancellationToken);
-
-            if (request.UltimaAplicacao.Dose >= vacinaResult.Doses)
-            {
-                return Unit.Value;
-            }
+                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, cancellationToken);                
 
             Comum.Models.Carteira carteira = new Comum.Models.Carteira(request.Id, request.Cpf, request.NomePessoa, request.DataNascimento);
 
-            Console.WriteLine("Criando carteira....");
-
             Aplicacao novoAgendamento = new(carteira.Cpf, carteira.NomePessoa, request.UltimaAplicacao.NomeVacina, request.UltimaAplicacao.Dose + 1, ((DateTime)request.UltimaAplicacao.DataAplicacao).AddDays(vacinaResult.Intervalo), null);
 
-            Console.WriteLine("Criando aplicacao....");
+            if (request.UltimaAplicacao.Dose >= vacinaResult.Doses)
+            {
+                return novoAgendamento;
+            }
 
-            Comum.Models.Carteira carteiraSend = carteira.AddAplicacao(novoAgendamento);
+            //Comum.Models.Carteira carteiraSend = carteira.AddAplicacao(novoAgendamento);
 
-            Console.WriteLine("Adicionei agendamento....");
-
-            AgendamentoCreate agendamentoCreate = new AgendamentoCreate()
+            AgendamentoCreate agendador = new AgendamentoCreate()
             {
                 Cpf = novoAgendamento.Cpf,
                 DataAgendamento = novoAgendamento.DataAgendamento,
@@ -63,16 +57,14 @@ namespace JennerMonolith.Services
 
             try
             {
-                _ = Mediator.Send(agendamentoCreate);
+                _ = Mediator.Send(agendador, cancellationToken);
             }
-            catch (Exception ex)
+            catch (Exception e)
             {
-                throw ex;
+                throw e;
             }
-            
-            
 
-            return Unit.Value;
+            return novoAgendamento;
         }
 
     }
