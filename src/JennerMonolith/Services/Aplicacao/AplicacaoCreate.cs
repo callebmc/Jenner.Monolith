@@ -36,19 +36,13 @@ namespace JennerMonolith.Services
 
         public async Task<Comum.Models.Aplicacao> Handle(AplicacaoCreate request, CancellationToken cancellationToken)
         {
-            Carteira carteiraResult = await MongoDatabase
-                .GetCarteiraCollection()
-                .FindOrCreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, cancellationToken);
-
-            Comum.Models.Aplicacao aplicacaoAplicada = new(carteiraResult.Cpf, carteiraResult.NomePessoa, request.NomeVacina, request.Dose, request.DataAgendamento, request.DataAplicada);
+            Comum.Models.Aplicacao aplicacaoAplicada = new(request.Cpf, request.NomePessoa, request.NomeVacina, request.Dose, request.DataAgendamento, request.DataAplicada);
 
             aplicacaoAplicada.ValidaAplicacao();
 
-            carteiraResult = carteiraResult.AddAplicacao(aplicacaoAplicada);
-
-            carteiraResult = await MongoDatabase
+            Carteira carteiraResult = await MongoDatabase
                 .GetCarteiraCollection()
-                .UpdateAsync(carteiraResult.ToPersistence(), cancellationToken);
+                .FindOrCreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, aplicacaoAplicada, cancellationToken);
 
             _ = Mediator.Send(new AgendadorCreate()
             {

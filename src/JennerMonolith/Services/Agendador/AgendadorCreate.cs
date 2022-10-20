@@ -32,9 +32,7 @@ namespace JennerMonolith.Services
 
             Vacina vacinaResult = await MongoDatabase
                                         .GetVacinaCollection()
-                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, cancellationToken);
-
-                
+                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, cancellationToken);                
 
             Comum.Models.Carteira carteira = new Comum.Models.Carteira(request.Id, request.Cpf, request.NomePessoa, request.DataNascimento);
 
@@ -45,9 +43,9 @@ namespace JennerMonolith.Services
                 return novoAgendamento;
             }
 
-            Comum.Models.Carteira carteiraSend = carteira.AddAplicacao(novoAgendamento);
+            //Comum.Models.Carteira carteiraSend = carteira.AddAplicacao(novoAgendamento);
 
-            _ = Mediator.Send(new AgendamentoCreate()
+            AgendamentoCreate agendador = new AgendamentoCreate()
             {
                 Cpf = novoAgendamento.Cpf,
                 DataAgendamento = novoAgendamento.DataAgendamento,
@@ -55,7 +53,16 @@ namespace JennerMonolith.Services
                 Dose = novoAgendamento.Dose,
                 NomePessoa = carteira.NomePessoa,
                 NomeVacina = novoAgendamento.NomeVacina
-            });
+            };
+
+            try
+            {
+                _ = Mediator.Send(agendador, cancellationToken);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
 
             return novoAgendamento;
         }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using System;
+using System.Reflection;
 
 namespace JennerMonolith
 {
@@ -24,7 +25,8 @@ namespace JennerMonolith
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddHttpContextAccessor();
-            services.AddMediatR(GetType().Assembly);
+            //services.AddMediatR(GetType().Assembly);
+            services.AddMediatR(MediatRServiceConfiguration => MediatRServiceConfiguration.AsSingleton(), Assembly.GetExecutingAssembly());
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
