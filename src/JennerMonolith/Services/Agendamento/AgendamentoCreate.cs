@@ -22,12 +22,10 @@ namespace JennerMonolith.Services
 
     public class AgendamentoCreateHandler :  IRequestHandler<AgendamentoCreate, Aplicacao>
     {
-        private IHttpContextAccessor HttpContextAccessor { get; }
         private readonly IMongoDatabase MongoDatabase;
 
-        public AgendamentoCreateHandler(IHttpContextAccessor httpContextAccessor, IMongoDatabase mongoDatabase)
+        public AgendamentoCreateHandler( IMongoDatabase mongoDatabase)
         {
-            HttpContextAccessor = httpContextAccessor ?? throw new ArgumentNullException(nameof(httpContextAccessor));
             MongoDatabase = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));
         }
 
@@ -39,21 +37,7 @@ namespace JennerMonolith.Services
 
             Carteira carteiraResult = await MongoDatabase
                 .GetCarteiraCollection()
-                .FindOrCreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, cancellationToken);
-
-
-            carteiraResult = carteiraResult.AddAplicacao(aplicacaoAgendada);
-
-            carteiraResult = await MongoDatabase
-                .GetCarteiraCollection()
-                .UpdateAsync(carteiraResult.ToPersistence(), cancellationToken);
-
-            //TODO: Após isso, envia a aplicação para a fila de aplicações agendadas e retorna para o usuário o comprovante do agendamento (aplicação com o GUID preenchido)
-
-            var requestSource = HttpContextAccessor?.HttpContext?.Request.Host.Value ?? throw new ArgumentNullException(nameof(HttpContextAccessor));
-
-
-            //TODO: Fazer esse trem ficar assíncrono de verdad
+                .FindOrCreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, aplicacaoAgendada, cancellationToken);
 
             return await Task.FromResult(aplicacaoAgendada);
         }
