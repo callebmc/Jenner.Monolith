@@ -19,13 +19,13 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
       ME_CONFIG_MONGODB_ADMINPASSWORD: example
-      ME_CONFIG_MONGODB_URL: mongodb+srv://jennermonolith:D2RDqXHhqTnuwbot@jennermonolith.jpj80ow.mongodb.net/?retryWrites=true&w=majority
+      ME_CONFIG_MONGODB_URL: mongodb+srv://jennermonolith:250793@jennermonolith.l8egivl.mongodb.net/?retryWrites=true&w=majority
 
   # Our own services
 
   Jenner.Monolith:
     environment:
-      - ConnectionStrings__MongoDb=mongodb+srv://jennermonolith:D2RDqXHhqTnuwbot@jennermonolith.jpj80ow.mongodb.net/?retryWrites=true&w=majority
+      - ConnectionStrings__MongoDb=mongodb+srv://jennermonolith:250793@jennermonolith.l8egivl.mongodb.net/?retryWrites=true&w=majority
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=http://+:80
     ports:

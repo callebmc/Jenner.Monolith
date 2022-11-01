@@ -16,8 +16,6 @@ namespace JennerMonolith.Controllers
         private readonly ISender sender;
         private readonly ILogger<AplicacaoController> logger;
 
-        private CancellationToken Token => HttpContext?.RequestAborted ?? default;
-
         public AplicacaoController(ISender sender, ILogger<AplicacaoController> logger)
         {
             this.sender = sender ?? throw new System.ArgumentNullException(nameof(sender));
@@ -29,15 +27,17 @@ namespace JennerMonolith.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] AplicacaoCreate novaAplicacao)
         {
+            logger.LogDebug("Começando a processar {requestType}: {userCpf}", nameof(Create), novaAplicacao.Cpf);
             Comum.Models.Aplicacao result;
             try
             {
                 result = await sender.Send(novaAplicacao);
+                logger.LogDebug("Requests processada com sucesso para {userCpf}", novaAplicacao.Cpf);
             }
             catch (System.Exception e)
             {
-                logger.LogError(e, "Deu Erro Aqui");
-                return BadRequest();
+                logger.LogError(e, "Deu ruim para o {userCpf}: {errorMessage}", novaAplicacao.Cpf, e.Message);
+                return BadRequest(e.Message);
             }
 
             return Ok(result);
