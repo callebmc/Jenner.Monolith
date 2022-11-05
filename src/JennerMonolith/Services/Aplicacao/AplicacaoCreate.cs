@@ -4,6 +4,7 @@ using JennerMonolith.Data;
 using JennerMonolith.Services;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
 using System.Threading;
@@ -25,35 +26,48 @@ namespace JennerMonolith.Services
 
     public class AplicacaoCreateHandler : IRequestHandler<AplicacaoCreate, Comum.Models.Aplicacao>
     {
-        private readonly IMongoDatabase MongoDatabase;
-        private readonly IMediator Mediator;
+        private readonly IMongoDatabase _mongoDb;
+        private readonly IMediator _mediator;
+        private readonly ILogger<AplicacaoCreateHandler> _logger;        
 
-        public AplicacaoCreateHandler(IHttpContextAccessor httpContextAccessor,  IMongoDatabase mongoDatabase, IMediator mediator)
+        public AplicacaoCreateHandler(IMongoDatabase mongoDatabase, IMediator mediator, ILogger<AplicacaoCreateHandler> logger)
         {
-            MongoDatabase = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));
-            Mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _mongoDb = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));
+            _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Comum.Models.Aplicacao> Handle(AplicacaoCreate request, CancellationToken cancellationToken)
         {
-            Comum.Models.Aplicacao aplicacaoAplicada = new(request.Cpf, request.NomePessoa, request.NomeVacina, request.Dose, request.DataAgendamento, request.DataAplicada);
+            _logger.LogDebug("Recebido command para criar uma Aplicação: {userCpf}", request.Cpf);
+            Aplicacao aplicacaoAplicada = new(request.Cpf, request.NomePessoa, request.NomeVacina, request.Dose, request.DataAgendamento, request.DataAplicada);
 
             aplicacaoAplicada.ValidaAplicacao();
+            _logger.LogDebug("Aplicação validada: {userCpf}", request.Cpf);
 
-            Carteira carteiraResult = await MongoDatabase
+            _logger.LogDebug("Criando uma Carteira no banco");
+            Carteira carteiraResult = await _mongoDb
                 .GetCarteiraCollection()
-                .FindOrCreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, aplicacaoAplicada, cancellationToken);
+                .CreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, aplicacaoAplicada, cancellationToken, cart =>
+                {
+                    if (cart is not null)
+                    {
+                        _logger.LogDebug("Carteira persistida com o ID {carteiraId} e Usuário {userCpf}", cart.Id, cart.Cpf);
+                    }
+                });
 
-            _ = Mediator.Send(new AgendadorCreate()
+            _logger.LogDebug("Carteira criada para o usuário {userCpf}", request.Cpf);
+            var aplSalva = await _mediator.Send(new AgendadorCreate()
             {
                 Id = carteiraResult.Id,
                 Cpf = aplicacaoAplicada.Cpf,
                 DataNascimento = carteiraResult.DataNascimento,
                 NomePessoa = carteiraResult.NomePessoa,
                 UltimaAplicacao = aplicacaoAplicada
-            });
+            }, cancellationToken);
 
-            return await Task.FromResult(aplicacaoAplicada);
+            _logger.LogDebug("Aplicação persistida no banco para o usuário {userCpf}", aplSalva.Cpf);
+            return aplicacaoAplicada;
         }
     }
 }

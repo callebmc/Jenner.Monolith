@@ -37,7 +37,7 @@ namespace JennerMonolith.Services
 
             Carteira carteiraResult = await MongoDatabase
                 .GetCarteiraCollection()
-                .FindOrCreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, aplicacaoAgendada, cancellationToken);
+                .CreateAsync(request.Cpf, request.NomePessoa, request.DataNascimento, aplicacaoAgendada, cancellationToken);
 
             return await Task.FromResult(aplicacaoAgendada);
         }

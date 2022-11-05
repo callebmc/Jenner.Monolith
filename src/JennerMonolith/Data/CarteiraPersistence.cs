@@ -1,5 +1,6 @@
 ﻿using JennerMonolith.Comum.Models;
 using JennerMonolith.Comum.Models.Validators;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace JennerMonolith.Data
             return carteira;
         }
 
-        public static async Task<JennerMonolith.Comum.Models.Carteira> FindOrCreateAsync(this IMongoCollection<CarteiraPersistence> collection, string cpf, string nomePessoa, DateTime dataNascimento, Aplicacao aplicacao, CancellationToken cancellationToken = default)
+        public static async Task<Carteira> CreateAsync(this IMongoCollection<CarteiraPersistence> collection, string cpf, string nomePessoa, DateTime dataNascimento, Aplicacao aplicacao, CancellationToken cancellationToken = default, Action<CarteiraPersistence> onComplete = null)
         {
             CarteiraPersistence novaCarteira = new CarteiraPersistence()
             {
@@ -66,7 +67,7 @@ namespace JennerMonolith.Data
             novaCarteira.ValidaCarteira();
 
             novaCarteira = await collection.InsertNewAsync(novaCarteira, cancellationToken);
-
+            onComplete?.Invoke(novaCarteira);
             return novaCarteira?.ToCarteira() ?? null;
         }
 
