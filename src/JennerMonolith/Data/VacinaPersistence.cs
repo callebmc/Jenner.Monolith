@@ -55,7 +55,7 @@ namespace JennerMonolith.Data
             return vacina;
         }
 
-        public static async Task<Vacina> FindOrCreateAsync(this IMongoCollection<VacinaPersistence> collection, string nomeVacina, CancellationToken cancellationToken = default, ILogger logger = null)
+        public static async Task<Vacina> FindOrCreateAsync(this IMongoCollection<VacinaPersistence> collection, string nomeVacina, ILogger logger = null, CancellationToken cancellationToken = default )
         {
             VacinaPersistence mongoResult = null;
 
@@ -65,7 +65,7 @@ namespace JennerMonolith.Data
 
             if (mongoResult is null)
             {                
-                logger.LogDebug("Não encontrou no banco... vamos criar");
+                logger?.LogDebug("Não encontrou no banco... vamos criar");
 
                 VacinaPersistence novaVacina = new VacinaPersistence()
                 {
@@ -79,11 +79,11 @@ namespace JennerMonolith.Data
 
                 if (mongoResult is null)
                 {
-                    logger.LogDebug("Ainda não conseguiu criar, não sei o motivo");
+                    logger?.LogDebug("Ainda não conseguiu criar, não sei o motivo");
                 }
                 else
                 {
-                    logger.LogDebug("Agora criou a vacina");
+                    logger?.LogDebug("Agora criou a vacina");
                 }
             }
 

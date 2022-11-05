@@ -37,7 +37,7 @@ namespace JennerMonolith.Services
 
             Vacina vacinaResult = await MongoDatabase
                                         .GetVacinaCollection()
-                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, cancellationToken);
+                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, logger, cancellationToken );
 
             Carteira carteira = new Carteira(request.Id, request.Cpf, request.NomePessoa, request.DataNascimento);
 
