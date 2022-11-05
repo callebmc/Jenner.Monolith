@@ -87,11 +87,6 @@ namespace JennerMonolith.Data
                     Console.WriteLine("Agora criou a vacina");
                 }
             }
-            else
-            {
-                Console.WriteLine("Carteira já existia no banco");
-
-            }
 
             return mongoResult?.ToVacina() ?? null;
         }
