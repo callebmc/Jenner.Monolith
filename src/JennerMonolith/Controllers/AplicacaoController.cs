@@ -25,13 +25,13 @@ namespace JennerMonolith.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Create([FromBody] AplicacaoCreate novaAplicacao)
-        {
+        public async Task<IActionResult> Create([FromBody] AplicacaoCreate novaAplicacao, CancellationToken token)
+        {            
             logger.LogDebug("Começando a processar {requestType}: {userCpf}", nameof(Create), novaAplicacao.Cpf);
             Comum.Models.Aplicacao result;
             try
             {
-                result = await sender.Send(novaAplicacao);
+                result = await sender.Send(novaAplicacao, token);
                 logger.LogDebug("Requests processada com sucesso para {userCpf}", novaAplicacao.Cpf);
             }
             catch (System.Exception e)

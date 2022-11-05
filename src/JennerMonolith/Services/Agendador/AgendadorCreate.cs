@@ -1,6 +1,8 @@
-﻿using JennerMonolith.Comum.Models;
+﻿using DnsClient.Internal;
+using JennerMonolith.Comum.Models;
 using JennerMonolith.Data;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using MongoDB.Driver;
 using System;
 using System.Threading;
@@ -21,10 +23,13 @@ namespace JennerMonolith.Services
     {
         private readonly IMongoDatabase MongoDatabase;
         private readonly IMediator Mediator;
-        public AgendadorCreateHandler(IMongoDatabase mongoDatabase, IMediator mediator)
+        private readonly ILogger<AgendadorCreateHandler> logger;
+
+        public AgendadorCreateHandler(IMongoDatabase mongoDatabase, IMediator mediator, ILogger<AgendadorCreateHandler> logger)
         {
             MongoDatabase = mongoDatabase ?? throw new ArgumentNullException(nameof(mongoDatabase));
             Mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task<Aplicacao> Handle(AgendadorCreate request, CancellationToken cancellationToken)
@@ -32,9 +37,9 @@ namespace JennerMonolith.Services
 
             Vacina vacinaResult = await MongoDatabase
                                         .GetVacinaCollection()
-                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, cancellationToken);                
+                                        .FindOrCreateAsync(request.UltimaAplicacao.NomeVacina, cancellationToken);
 
-            Comum.Models.Carteira carteira = new Comum.Models.Carteira(request.Id, request.Cpf, request.NomePessoa, request.DataNascimento);
+            Carteira carteira = new Carteira(request.Id, request.Cpf, request.NomePessoa, request.DataNascimento);
 
             Aplicacao novoAgendamento = new(carteira.Cpf, carteira.NomePessoa, request.UltimaAplicacao.NomeVacina, request.UltimaAplicacao.Dose + 1, ((DateTime)request.UltimaAplicacao.DataAplicacao).AddDays(vacinaResult.Intervalo), null);
 
@@ -57,11 +62,13 @@ namespace JennerMonolith.Services
 
             try
             {
-                _ = Mediator.Send(agendador, cancellationToken);
+                var result = await Mediator.Send(agendador, cancellationToken);
+                logger.LogDebug("Aplicação criada para usuário {userCpf}", result.Cpf);
             }
             catch (Exception e)
             {
-                throw e;
+                logger.LogError(e, "Não foi possível criar o Agendamento para {userCpf}", agendador.Cpf);
+                throw;
             }
 
             return novoAgendamento;

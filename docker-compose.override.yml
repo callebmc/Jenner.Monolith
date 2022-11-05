@@ -6,10 +6,9 @@ services:
 
   Jenner.Monolith:
     environment:
-      - ConnectionStrings__MongoDb=mongodb+srv://jennermonolith:250793@jennermonolith.l8egivl.mongodb.net/?retryWrites=true&w=majority
-      #- ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__MongoDb=mongodb+srv://jennermonolith:250793@jennermonolith.l8egivl.mongodb.net/?retryWrites=true&w=majority      
       - ASPNETCORE_URLS=http://+:80
-      - Logging_LogLevel_Default=Debug
+      - Logging_LogLevel_Default=Error
     ports:
       - "6020:80"
     volumes:

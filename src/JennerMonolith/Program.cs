@@ -20,10 +20,7 @@ namespace JennerMonolith
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    webBuilder.UseKestrel((opts) =>
-                    {
-                        opts.Limits.MaxConcurrentConnections = 750;
-                    });
+                    webBuilder.UseKestrel();
                     webBuilder.UseStartup<Startup>();
                 });
     }
